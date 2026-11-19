@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipon Camera</title>
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+h1 { color: #00e5ff; }
+video, canvas {
+  width: 92%;
+  max-width: 450px;
+  border-radius: 15px;
+  margin: 10px;
+}
+button {
+  padding: 13px 22px;
+  margin: 8px;
+  border: none;
+  border-radius: 10px;
+  background: #00c8ff;
+  font-size: 16px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>📸 Shipon Camera</h1>
+
+<video id="video" autoplay playsinline></video>
+<br>
+
+<button onclick="startCamera()">Camera চালু</button>
+<button onclick="takePhoto()">ছবি তুলুন</button>
+<br>
+
+<canvas id="canvas"></canvas>
+<br>
+<a id="download" download="shipon-photo.png">
+<button>ছবি Download</button>
+</a>
+
+<script>
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" },
+      audio: false
+    });
+    video.srcObject = stream;
+  } catch (error) {
+    alert("ক্যামেরা চালু করা যায়নি। অনুমতি দিন।");
+  }
+}
+
+function takePhoto() {
+  if (!video.videoWidth) {
+    alert("আগে ক্যামেরা চালু করুন");
+    return;
+  }
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+  document.getElementById("download").href =
+    canvas.toDataURL("image/png");
+}
+</script>
+
+</body>
+</html>
